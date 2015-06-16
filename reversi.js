@@ -35,44 +35,35 @@ function start() {
 	var canvas = document.createElement('canvas');
 	canvas.width = width;
 	canvas.height = height;
-
 	var ctx = canvas.getContext("2d");
 
-	var count = function(x, y, c) {
-		if (board[y][x]) return 0;
+	var scan = function(x, y, c, f) {
+		if (board[y][x]) return;
 		var d = [[0,1],[1,0],[-1,0],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
-		var cc = 0;
-		for (var i=0;i<8;i++) {
-			for (var px=x+d[i][0], py=y+d[i][1], n=0; py>=0 && py<board.length && px>=0 && px < board[0].length; px+=d[i][0], py+=d[i][1], n++) {
-				if (board[py][px] == c) {cc += n; break;}
-				if (board[py][px] == 0) {break;}
-			}
-		}
-		return cc;
-	}
-	
-	var score = function(x, y, c) {
-		var cc = count(x,y, c);
-		return cc > 0 ? (cc*10 + aiScoreMap[y][x]) : 0;
-	}
-
-	var set = function(x, y, c) {
-		board[y][x] = c;
-		var d = [[0,1],[1,0],[-1,0],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
-		var cc = 0;
 		for (var i=0;i<8;i++) {
 			for (var px=x+d[i][0], py=y+d[i][1], n=0; py>=0 && py<board.length && px>=0 && px < board[0].length; px+=d[i][0], py+=d[i][1], n++) {
 				if (board[py][px] == c) {
-					for (var j=1; j<=n; j++) {
-						board[y+d[i][1]*j][x+d[i][0]*j] = c;
-					}
-					cc += n;
+					for (var j=1; j<=n; j++) f(x+d[i][0]*j,y+d[i][1]*j);
 					break;
 				}
 				if (board[py][px] == 0) {break;}
 			}
 		}
+	}
+
+	var count = function(x, y, c) {
+		var cc = 0;
+		scan(x, y, c, function(px,py){cc++});
 		return cc;
+	}
+
+	var set = function(x, y, c) {
+		scan(x, y, c, function(px,py){cc++; board[py][px] = c});
+	}
+
+	var score = function(x, y, c) {
+		var cc = count(x,y, c);
+		return cc > 0 ? (cc*10 + aiScoreMap[y][x]) : 0;
 	}
 
 	var draw = function () {
@@ -107,7 +98,7 @@ function start() {
 		console.log("%c ", "font-size:0px;padding-left:"+width+"px;padding-top:"+height+"px;background:green url("+ canvas.toDataURL() + ") no-repeat");
 	}
 
-	var ff = function(x,y) {
+	var human = function(x,y) {
 		if (count(x,y, HUMAN_COLOR) == 0) return "?";
 		set(x,y, HUMAN_COLOR);
 		draw();
@@ -137,14 +128,14 @@ function start() {
 		} else {
 			console.log("PASS!");
 		}
+		f = human;
 		console.log("Your turn : call f(x,y); // ex: f(D, 2)");
-		f = ff;
 	}
 
 	console.log("%c ", "font-size:512px");
 	draw();
 	print();
-	f = ff;
+	f = human;
 	return "Your turn : call f(x,y); // ex: f(D, 2)";
 }
 
