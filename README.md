@@ -6,3 +6,7 @@ UIはとても不親切ですがゲーム開始に辿り着ければそれっぽ
 
 
 デモページ: http://binzume.github.io/reversi-for-chrome/
+
+## License
+
+Public Domain.
