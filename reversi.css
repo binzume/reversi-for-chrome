@@ -1,0 +1,9 @@
+body{
+	padding: 0pt;
+	margin: 0pt;
+	width: 100vw;
+	height: 100vh;
+    display: table-cell;
+    vertical-align: middle;
+	text-align: center;
+}
