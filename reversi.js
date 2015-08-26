@@ -58,7 +58,8 @@ function start() {
 	}
 
 	var set = function(x, y, c) {
-		scan(x, y, c, function(px,py){cc++; board[py][px] = c});
+		scan(x, y, c, function(px,py){board[py][px] = c});
+		board[y][x] = c;
 	}
 
 	var score = function(x, y, c) {
